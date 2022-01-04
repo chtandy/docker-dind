@@ -1,0 +1,36 @@
+version: '3'
+services:
+  docker:
+    image: docker:stable-dind
+    container_name: dockerd
+    hostname: dockerd
+    restart: always
+    privileged: true
+    environment:
+      DOCKER_TLS_CERTDIR: /certs
+    volumes:
+      - ./data/certs/certs-ca:/certs/ca
+      - ./data/certs/certs-client:/certs/client
+
+  ubuntu:
+    image: r19750927/work-ubuntu
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        DockerVersion: ${DockerVersion}
+        DockerComposeVer: ${DockerComposeVer}
+    container_name: docker-ubuntu
+    hostname: docker-mini-ubuntu
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    restart: always
+    environment:
+      DOCKER_CERT_PATH: /certs/client
+      DOCKER_HOST: tcp://docker:2376
+      DOCKER_TLS_VERIFY: 1
+    volumes:
+      - ./data/certs/certs-client:/certs/client:ro
+    depends_on:
+      - docker
