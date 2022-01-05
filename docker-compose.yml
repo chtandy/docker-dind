@@ -13,7 +13,7 @@ services:
       - ./data/certs/certs-client:/certs/client
 
   ubuntu:
-    image: r19750927/work-ubuntu
+    image: docker:ubuntu
     build:
       context: ./
       dockerfile: Dockerfile
@@ -32,5 +32,6 @@ services:
       DOCKER_TLS_VERIFY: 1
     volumes:
       - ./data/certs/certs-client:/certs/client:ro
+      - ./data/data:/data
     depends_on:
       - docker
