@@ -1,7 +1,8 @@
 version: '3'
 services:
   docker:
-    image: docker:stable-dind
+    image: docker:24.0.9-dind 
+    #image: docker:stable-dind
     container_name: dockerd
     hostname: dockerd
     restart: always
