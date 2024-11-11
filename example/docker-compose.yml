@@ -1,0 +1,35 @@
+version: '3'
+services:
+  docker-lab:
+    image: docker:27.3.1
+    container_name: docker-lab
+    restart: always
+    command: sh
+    tty: true
+    volumes:
+      - ./data/certs/client:/certs/client:ro
+    environment:
+      DOCKER_CERT_PATH: /certs/client
+      DOCKER_HOST: tcp://docker-dind:2376
+      DOCKER_TLS_VERIFY: 1
+
+  docker-dind:
+    image: docker:27.3.1-dind
+    container_name: docker-dind
+    hostname: docker-dind
+    restart: always
+    privileged: true
+    environment:
+      DOCKER_TLS_CERTDIR: "/certs"
+    volumes:
+      - ./data/certs/ca:/certs/ca
+      - ./data/certs/client:/certs/client
+    ports:
+      - "2376"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+
